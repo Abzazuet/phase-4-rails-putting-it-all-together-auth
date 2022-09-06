@@ -9,7 +9,7 @@ class SessionsController < ApplicationController
                 render json: {errors: user.errors.full_messages}, status: :unauthorized
             end
         else
-            render json: {error: "Not authorized"}, status: :unauthorized
+            create_blank_user_to_return    
         end
         
     end
@@ -18,8 +18,15 @@ class SessionsController < ApplicationController
             session.delete :user_id
             head :no_content
         else
-            render json: {errors: "Not authorized"}, status: :unauthorized
+            create_blank_user_to_return
         end
-        
+    end
+
+    private 
+
+    def create_blank_user_to_return
+        user = User.new
+        user.validate
+        render json: {errors: user.errors.full_messages}, status: :unauthorized
     end
 end
